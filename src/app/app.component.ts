@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MqttService } from './mqtt.service';
 
 @Component({
@@ -6,11 +6,18 @@ import { MqttService } from './mqtt.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'LEDmom';
   timerValue: string = '500';
 
   constructor(private mqtt: MqttService) {}
+
+  ngOnInit(): void {
+    const socket = this.mqtt.getTempWebSocket();
+    socket.addEventListener('message', (newTemp) => {
+      console.log(newTemp)
+    })
+  }
 
   LEDon() {
     this.mqtt.setLed("on");
